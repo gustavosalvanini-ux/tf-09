@@ -198,3 +198,30 @@ def tentar(rotulo, acao):
         print(rotulo, "-> passou (!)")
     except Exception as erro:
         print(rotulo, "->", type(erro).__name__ + ":", erro)
+
+
+# --- Testes da árvore com o Atalho -------------------------------------------
+disco = Pasta("C:")
+usuarios = Pasta("Users", disco)
+gustavo = Pasta("Gustavo", usuarios)
+desktop = Pasta("Desktop", gustavo)
+documentos = Pasta("Documentos", gustavo)
+
+anotacoes = Arquivo("anotacoes.txt", 150, desktop)
+projeto = Arquivo("projeto.py", 800, documentos)
+
+atalho_projeto = Atalho("atalho_projeto.lnk", projeto, desktop)
+atalho_documentos = Atalho("atalho_documentos.lnk", documentos, desktop)
+
+# 1. Mostra a árvore completa
+disco.mostrar()
+
+# 2. Espaço total de lista contendo arquivo, pasta com atalho dentro e lixeira
+lixeira = Lixeira()
+lixeira.descartar(Arquivo("temp.log", 50))
+print("Espaço total:", espaco_total([projeto, desktop, lixeira]))
+
+# 3. Três tentativas que devem falhar e capturar o erro
+tentar("atalho.destino = outro item", lambda: setattr(atalho_projeto, "destino", anotacoes))
+tentar("um atalho apontando para si mesmo", lambda: atalho_projeto.redirecionar(atalho_projeto))
+tentar("um atalho apontando para a pasta onde ele esta", lambda: atalho_projeto.redirecionar(desktop))
